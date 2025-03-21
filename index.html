@@ -51,6 +51,7 @@
         /* Goal circle and text styles */
         .goal-circle {
             fill: #4299e1;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
         .goal-text {
@@ -59,9 +60,31 @@
             font-weight: 500;
         }
 
-        /* Tree trunk style */
+        /* Tree styles */
         .trunk {
-            fill: #805ad5;
+            fill: #4a2f1c;
+        }
+
+        .branch-path {
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .branch-1 { stroke: #4a2f1c; }
+        .branch-2 { stroke: #4a2f1c; }
+        .branch-3 { stroke: #4a2f1c; }
+
+        .branch-1 { stroke-width: 12; }
+        .branch-2 { stroke-width: 10; }
+        .branch-3 { stroke-width: 8; }
+
+        .branch-1-sub { stroke-width: 8; }
+        .branch-2-sub { stroke-width: 6; }
+        .branch-3-sub { stroke-width: 4; }
+
+        .leaf {
+            fill: #2d5a27;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
     </style>
 </head>
@@ -69,35 +92,71 @@
     <h1>My Goal Tree</h1>
     <div class="tree-container">
         <svg width="100%" height="100%" viewBox="0 0 800 600">
-            <!-- Tree trunk -->
-            <rect class="trunk" x="380" y="500" width="40" height="80" />
+            <!-- Tree trunk with organic shape -->
+            <path class="trunk" d="M 380 580 
+                                 C 380 550, 390 520, 400 500
+                                 C 410 520, 420 550, 420 580
+                                 L 380 580 Z" />
 
-            <!-- Branch 1 (Left) -->
+            <!-- Branch 1 (Left) with sub-branches -->
             <g id="branch-1" class="branch">
-                <path d="M 400 500 C 300 450, 200 400, 150 300" 
-                      stroke="#805ad5" 
-                      fill="none" 
-                      stroke-width="8" />
+                <!-- Main branch -->
+                <path class="branch-path branch-1" 
+                      d="M 400 500 C 300 450, 200 400, 150 300" 
+                      fill="none" />
+                <!-- Sub-branches -->
+                <path class="branch-path branch-1-sub" 
+                      d="M 200 400 C 150 380, 100 350, 80 300" 
+                      fill="none" />
+                <path class="branch-path branch-1-sub" 
+                      d="M 200 400 C 180 370, 160 340, 140 310" 
+                      fill="none" />
+                <!-- Leaves -->
+                <path class="leaf" d="M 70 290 Q 80 280, 90 290 Q 80 300, 70 290" />
+                <path class="leaf" d="M 130 300 Q 140 290, 150 300 Q 140 310, 130 300" />
+                <!-- Goal circle and text -->
                 <circle class="goal-circle" cx="150" cy="300" r="20" />
                 <text class="goal-text" x="120" y="270">Goal 1</text>
             </g>
 
-            <!-- Branch 2 (Center) -->
+            <!-- Branch 2 (Center) with sub-branches -->
             <g id="branch-2" class="branch">
-                <path d="M 400 500 C 400 400, 400 350, 400 250" 
-                      stroke="#805ad5" 
-                      fill="none" 
-                      stroke-width="8" />
+                <!-- Main branch -->
+                <path class="branch-path branch-2" 
+                      d="M 400 500 C 400 400, 400 350, 400 250" 
+                      fill="none" />
+                <!-- Sub-branches -->
+                <path class="branch-path branch-2-sub" 
+                      d="M 400 350 C 380 330, 360 310, 350 280" 
+                      fill="none" />
+                <path class="branch-path branch-2-sub" 
+                      d="M 400 350 C 420 330, 440 310, 450 280" 
+                      fill="none" />
+                <!-- Leaves -->
+                <path class="leaf" d="M 340 270 Q 350 260, 360 270 Q 350 280, 340 270" />
+                <path class="leaf" d="M 460 270 Q 470 260, 480 270 Q 470 280, 460 270" />
+                <!-- Goal circle and text -->
                 <circle class="goal-circle" cx="400" cy="250" r="20" />
                 <text class="goal-text" x="370" y="220">Goal 2</text>
             </g>
 
-            <!-- Branch 3 (Right) -->
+            <!-- Branch 3 (Right) with sub-branches -->
             <g id="branch-3" class="branch">
-                <path d="M 400 500 C 500 450, 600 400, 650 300" 
-                      stroke="#805ad5" 
-                      fill="none" 
-                      stroke-width="8" />
+                <!-- Main branch -->
+                <path class="branch-path branch-3" 
+                      d="M 400 500 C 500 450, 600 400, 650 300" 
+                      fill="none" />
+                <!-- Sub-branches -->
+                <path class="branch-path branch-3-sub" 
+                      d="M 600 400 C 650 380, 700 350, 720 300" 
+                      fill="none" />
+                <path class="branch-path branch-3-sub" 
+                      d="M 600 400 C 620 370, 640 340, 660 310" 
+                      fill="none" />
+                <!-- Leaves -->
+                <path class="leaf" d="M 710 290 Q 720 280, 730 290 Q 720 300, 710 290" />
+                <path class="leaf" d="M 650 300 Q 660 290, 670 300 Q 660 310, 650 300" />
+                <!-- Goal circle and text -->
                 <circle class="goal-circle" cx="650" cy="300" r="20" />
                 <text class="goal-text" x="620" y="270">Goal 3</text>
             </g>
