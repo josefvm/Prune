@@ -3,221 +3,212 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Goal Tree</title>
+    <title>Organic Goal Tree</title>
     <style>
-        /* Modern reset and base styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            background-color: #f8fafc;
-            padding: 2rem;
+            min-height: 100vh;
+            background: #f0f4f8;
+            margin: 0;
+            font-family: Arial, sans-serif;
         }
 
-        h1 {
-            color: #1a202c;
-            margin-bottom: 2rem;
-            font-size: 2.5rem;
-        }
-
-        /* SVG container styles */
         .tree-container {
             width: 100%;
-            max-width: 900px;
-            height: 800px;
-            background-color: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
             padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .tree-group {
-            transform-origin: center;
-            transition: transform 0.3s ease;
-        }
-
-        .goal-node {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .goal-node:hover {
-            transform: scale(1.15);
-        }
-
-        .goal-circle {
-            fill: #3182ce;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-        }
-
-        .goal-text {
-            fill: #2d3748;
-            font-size: 14px;
-            font-weight: 500;
-            text-anchor: middle;
+        svg {
+            width: 100%;
+            height: auto;
         }
 
         .trunk {
-            fill: #2d1810;
+            fill: #5D4037;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
         .branch {
+            stroke: #5D4037;
             fill: none;
-            stroke: #3d2317;
             stroke-linecap: round;
             stroke-linejoin: round;
+            transition: all 0.3s ease;
+        }
+
+        .branch-thick {
+            stroke-width: 16;
+        }
+
+        .branch-medium {
+            stroke-width: 12;
+        }
+
+        .branch-thin {
+            stroke-width: 8;
         }
 
         .leaf {
-            fill: #2f855a;
+            fill: #2E7D32;
             transform-origin: center;
             transition: transform 0.3s ease;
+            opacity: 0.9;
         }
 
         .leaf:nth-child(2n) {
-            fill: #38a169;
+            fill: #388E3C;
         }
 
         .leaf:nth-child(3n) {
-            fill: #276749;
+            fill: #43A047;
         }
 
         .leaf:hover {
             transform: scale(1.1) rotate(5deg);
         }
+
+        .goal-node {
+            fill: #2196F3;
+            cursor: pointer;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+            transition: all 0.3s ease;
+        }
+
+        .goal-node:hover {
+            transform: scale(1.15);
+            fill: #1976D2;
+        }
+
+        .goal-text {
+            fill: #fff;
+            font-size: 14px;
+            text-anchor: middle;
+            font-family: Arial, sans-serif;
+            pointer-events: none;
+            font-weight: bold;
+        }
+
+        .goal-label {
+            fill: #1a202c;
+            font-size: 12px;
+            text-anchor: middle;
+            font-family: Arial, sans-serif;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
-    <h1>My Goal Tree</h1>
     <div class="tree-container">
-        <svg width="100%" height="100%" viewBox="0 0 900 800" preserveAspectRatio="xMidYMid meet">
-            <defs>
-                <!-- Leaf template -->
-                <path id="leaf-template" 
-                      d="M 0,0 C 5,-5 10,-5 15,0 C 10,5 5,5 0,0" />
-            </defs>
+        <svg viewBox="0 0 800 600" preserveAspectRatio="xMidYMid meet">
+            <!-- Trunk -->
+            <path class="trunk" 
+                  d="M 380,550 
+                     C 380,500 390,480 400,450
+                     C 410,480 420,500 420,550
+                     L 380,550 Z" />
+
+            <!-- Main Branches -->
+            <path class="branch branch-thick" 
+                  d="M 400,450 C 300,400 200,380 150,300" />
+            <path class="branch branch-thick" 
+                  d="M 400,450 C 500,400 600,380 650,300" />
             
-            <!-- Main tree group -->
-            <g class="tree-group">
-                <!-- Trunk -->
-                <path class="trunk" 
-                      d="M 430,700 
-                         C 430,650 440,600 450,550
-                         C 460,600 470,650 470,700
-                         L 430,700 Z" />
+            <!-- Secondary Branches Left -->
+            <path class="branch branch-medium" 
+                  d="M 400,450 C 350,400 300,350 250,320" />
+            <path class="branch branch-medium" 
+                  d="M 250,320 C 220,300 190,280 160,270" />
+            <path class="branch branch-thin" 
+                  d="M 250,320 C 240,290 230,260 220,240" />
+            
+            <!-- Secondary Branches Right -->
+            <path class="branch branch-medium" 
+                  d="M 400,450 C 450,400 500,350 550,320" />
+            <path class="branch branch-medium" 
+                  d="M 550,320 C 580,300 610,280 640,270" />
+            <path class="branch branch-thin" 
+                  d="M 550,320 C 560,290 570,260 580,240" />
 
-                <!-- Left main branches -->
-                <path class="branch" stroke-width="12"
-                      d="M 450,550 C 350,500 250,450 200,350" />
-                <path class="branch" stroke-width="10"
-                      d="M 450,550 C 380,480 320,420 280,380" />
-                <path class="branch" stroke-width="8"
-                      d="M 450,550 C 400,450 350,400 300,320" />
+            <!-- Center Branch -->
+            <path class="branch branch-medium" 
+                  d="M 400,450 C 400,400 400,350 400,280" />
+            <path class="branch branch-thin" 
+                  d="M 400,350 C 380,320 360,300 340,290" />
+            <path class="branch branch-thin" 
+                  d="M 400,350 C 420,320 440,300 460,290" />
 
-                <!-- Right main branches -->
-                <path class="branch" stroke-width="12"
-                      d="M 450,550 C 550,500 650,450 700,350" />
-                <path class="branch" stroke-width="10"
-                      d="M 450,550 C 520,480 580,420 620,380" />
-                <path class="branch" stroke-width="8"
-                      d="M 450,550 C 500,450 550,400 600,320" />
+            <!-- Leaves -->
+            <g class="leaves">
+                <!-- Left Side -->
+                <ellipse class="leaf" cx="150" cy="300" rx="15" ry="25" transform="rotate(-30,150,300)" />
+                <ellipse class="leaf" cx="160" cy="270" rx="12" ry="20" transform="rotate(-15,160,270)" />
+                <ellipse class="leaf" cx="220" cy="240" rx="12" ry="22" transform="rotate(-45,220,240)" />
+                <ellipse class="leaf" cx="250" cy="320" rx="14" ry="24" transform="rotate(-20,250,320)" />
+                <ellipse class="leaf" cx="340" cy="290" rx="13" ry="23" transform="rotate(-25,340,290)" />
 
-                <!-- Center branches -->
-                <path class="branch" stroke-width="10"
-                      d="M 450,550 C 450,450 450,350 450,250" />
-                <path class="branch" stroke-width="8"
-                      d="M 450,550 C 430,450 410,350 390,280" />
-                <path class="branch" stroke-width="8"
-                      d="M 450,550 C 470,450 490,350 510,280" />
+                <!-- Center -->
+                <ellipse class="leaf" cx="400" cy="280" rx="15" ry="25" transform="rotate(0,400,280)" />
+                <ellipse class="leaf" cx="380" cy="300" rx="12" ry="20" transform="rotate(-15,380,300)" />
+                <ellipse class="leaf" cx="420" cy="300" rx="12" ry="20" transform="rotate(15,420,300)" />
 
-                <!-- Sub-branches (left) -->
-                <path class="branch" stroke-width="6"
-                      d="M 200,350 C 180,330 160,310 140,300" />
-                <path class="branch" stroke-width="6"
-                      d="M 280,380 C 260,360 240,340 220,330" />
+                <!-- Right Side -->
+                <ellipse class="leaf" cx="650" cy="300" rx="15" ry="25" transform="rotate(30,650,300)" />
+                <ellipse class="leaf" cx="640" cy="270" rx="12" ry="20" transform="rotate(15,640,270)" />
+                <ellipse class="leaf" cx="580" cy="240" rx="12" ry="22" transform="rotate(45,580,240)" />
+                <ellipse class="leaf" cx="550" cy="320" rx="14" ry="24" transform="rotate(20,550,320)" />
+                <ellipse class="leaf" cx="460" cy="290" rx="13" ry="23" transform="rotate(25,460,290)" />
+            </g>
 
-                <!-- Sub-branches (right) -->
-                <path class="branch" stroke-width="6"
-                      d="M 700,350 C 720,330 740,310 760,300" />
-                <path class="branch" stroke-width="6"
-                      d="M 620,380 C 640,360 660,340 680,330" />
+            <!-- Goal Nodes -->
+            <g class="goal-node-group" onclick="goalClicked('Goal 1')">
+                <circle class="goal-node" cx="150" cy="300" r="20" />
+                <text class="goal-text" x="150" y="305">1</text>
+                <text class="goal-label" x="150" y="335">Growth</text>
+            </g>
 
-                <!-- Goal nodes -->
-                <g id="goal-1" class="goal-node">
-                    <circle class="goal-circle" cx="140" cy="300" r="25" />
-                    <text class="goal-text" x="140" y="305">Goal 1</text>
-                </g>
+            <g class="goal-node-group" onclick="goalClicked('Goal 2')">
+                <circle class="goal-node" cx="400" cy="280" r="20" />
+                <text class="goal-text" x="400" y="285">2</text>
+                <text class="goal-label" x="400" y="315">Balance</text>
+            </g>
 
-                <g id="goal-2" class="goal-node">
-                    <circle class="goal-circle" cx="220" cy="330" r="25" />
-                    <text class="goal-text" x="220" y="335">Goal 2</text>
-                </g>
+            <g class="goal-node-group" onclick="goalClicked('Goal 3')">
+                <circle class="goal-node" cx="650" cy="300" r="20" />
+                <text class="goal-text" x="650" y="305">3</text>
+                <text class="goal-label" x="650" y="335">Success</text>
+            </g>
 
-                <g id="goal-3" class="goal-node">
-                    <circle class="goal-circle" cx="450" cy="250" r="25" />
-                    <text class="goal-text" x="450" y="255">Goal 3</text>
-                </g>
+            <g class="goal-node-group" onclick="goalClicked('Goal 4')">
+                <circle class="goal-node" cx="220" cy="240" r="20" />
+                <text class="goal-text" x="220" y="245">4</text>
+                <text class="goal-label" x="220" y="275">Focus</text>
+            </g>
 
-                <g id="goal-4" class="goal-node">
-                    <circle class="goal-circle" cx="680" cy="330" r="25" />
-                    <text class="goal-text" x="680" y="335">Goal 4</text>
-                </g>
-
-                <g id="goal-5" class="goal-node">
-                    <circle class="goal-circle" cx="760" cy="300" r="25" />
-                    <text class="goal-text" x="760" y="305">Goal 5</text>
-                </g>
-
-                <!-- Leaves (distributed across branches) -->
-                <g class="leaves-group">
-                    <!-- Left side leaves -->
-                    <use href="#leaf-template" class="leaf" x="130" y="290" transform="rotate(-30 130 290) scale(1.2)" />
-                    <use href="#leaf-template" class="leaf" x="150" y="280" transform="rotate(15 150 280) scale(1.1)" />
-                    <use href="#leaf-template" class="leaf" x="210" y="320" transform="rotate(-45 210 320) scale(1.3)" />
-                    <use href="#leaf-template" class="leaf" x="230" y="310" transform="rotate(20 230 310) scale(1.2)" />
-                    <use href="#leaf-template" class="leaf" x="270" y="370" transform="rotate(-15 270 370) scale(1.1)" />
-                    <use href="#leaf-template" class="leaf" x="290" y="360" transform="rotate(40 290 360) scale(1.2)" />
-
-                    <!-- Center leaves -->
-                    <use href="#leaf-template" class="leaf" x="440" y="240" transform="rotate(-25 440 240) scale(1.2)" />
-                    <use href="#leaf-template" class="leaf" x="460" y="230" transform="rotate(25 460 230) scale(1.2)" />
-                    <use href="#leaf-template" class="leaf" x="380" y="270" transform="rotate(-35 380 270) scale(1.1)" />
-                    <use href="#leaf-template" class="leaf" x="520" y="270" transform="rotate(35 520 270) scale(1.1)" />
-
-                    <!-- Right side leaves -->
-                    <use href="#leaf-template" class="leaf" x="670" y="320" transform="rotate(-20 670 320) scale(1.2)" />
-                    <use href="#leaf-template" class="leaf" x="690" y="310" transform="rotate(25 690 310) scale(1.1)" />
-                    <use href="#leaf-template" class="leaf" x="750" y="290" transform="rotate(-30 750 290) scale(1.3)" />
-                    <use href="#leaf-template" class="leaf" x="770" y="280" transform="rotate(15 770 280) scale(1.2)" />
-                    <use href="#leaf-template" class="leaf" x="610" y="370" transform="rotate(-40 610 370) scale(1.1)" />
-                    <use href="#leaf-template" class="leaf" x="630" y="360" transform="rotate(30 630 360) scale(1.2)" />
-                </g>
+            <g class="goal-node-group" onclick="goalClicked('Goal 5')">
+                <circle class="goal-node" cx="580" cy="240" r="20" />
+                <text class="goal-text" x="580" y="245">5</text>
+                <text class="goal-label" x="580" y="275">Vision</text>
             </g>
         </svg>
     </div>
 
     <script>
-        // Add click event listeners to all goal nodes
-        document.querySelectorAll('.goal-node').forEach(node => {
-            node.addEventListener('click', (e) => {
-                const goalId = e.currentTarget.id;
-                console.log(`Clicked goal: ${goalId}`);
-            });
-        });
+        function goalClicked(goal) {
+            console.log("Clicked:", goal);
+        }
 
-        // Add subtle animation to leaves
+        // Add random gentle swaying animation to leaves
         document.querySelectorAll('.leaf').forEach(leaf => {
             leaf.addEventListener('mouseover', () => {
                 const randomRotation = Math.random() * 10 - 5;
-                leaf.style.transform = `scale(1.1) rotate(${randomRotation}deg)`;
+                const randomScale = 1 + (Math.random() * 0.2);
+                leaf.style.transform = `scale(${randomScale}) rotate(${randomRotation}deg)`;
             });
             
             leaf.addEventListener('mouseout', () => {
