@@ -31,6 +31,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 2rem;
             position: relative;
+            transition: opacity 0.3s ease;
         }
 
         /* SVG styles */
@@ -390,10 +391,17 @@
             font-size: 0.9rem;
             transition: all 0.2s ease;
             z-index: 11;
+            opacity: 0;
+            transform: translateX(-20px);
         }
 
         .back-button:hover {
             background: #3182ce;
+        }
+
+        .back-button.visible {
+            opacity: 1;
+            transform: translateX(0);
         }
 
         .subgoal-title {
@@ -405,6 +413,62 @@
             color: #2d3748;
             font-weight: bold;
             z-index: 11;
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+
+        .subgoal-title.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Add transition styles */
+        .tree-container {
+            position: relative;
+            transition: opacity 0.3s ease;
+        }
+
+        .main-tree,
+        .subgoal-tree {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .main-tree {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .main-tree.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .subgoal-tree {
+            opacity: 0;
+            transform: scale(0.95);
+            display: block;
+        }
+
+        .subgoal-tree.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Branch animation */
+        .branch-group {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s ease;
+        }
+
+        .branch-group.visible {
+            opacity: 1;
+            transform: scale(1);
         }
     </style>
 </head>
@@ -774,6 +838,11 @@
             // Add the new group to the SVG
             document.querySelector('svg').appendChild(newGroup);
 
+            // Animate the new branch
+            setTimeout(() => {
+                newGroup.classList.add('visible');
+            }, 100);
+
             // Add click event listener to the new branch
             newGroup.addEventListener('click', (e) => {
                 const branchId = newGroup.dataset.branchId;
@@ -853,15 +922,20 @@
             existingSubgoals.forEach(subgoal => subgoal.remove());
 
             // Create subgoal branches
-            Object.entries(parentGoal.subgoals).forEach(([subgoalId, subgoal]) => {
+            Object.entries(parentGoal.subgoals).forEach(([subgoalId, subgoal], index) => {
                 createSubgoalBranch(subgoalId, subgoal);
+                // Add delay for each branch
+                setTimeout(() => {
+                    const branchGroup = subgoalTree.querySelector(`[data-branch-id="${subgoalId}"]`);
+                    branchGroup.classList.add('visible');
+                }, index * 100);
             });
 
-            // Show subgoal view
-            mainTree.style.display = 'none';
-            subgoalTree.style.display = 'block';
-            backButton.style.display = 'block';
-            subgoalTitle.style.display = 'block';
+            // Show subgoal view with transitions
+            mainTree.classList.add('hidden');
+            subgoalTree.classList.add('visible');
+            backButton.classList.add('visible');
+            subgoalTitle.classList.add('visible');
         }
 
         // Function to create a subgoal branch
@@ -914,16 +988,25 @@
                 showGoalDetails(subgoalId);
             });
 
+            // Add the branch to the tree
             subgoalTree.appendChild(newGroup);
+
+            // Set initial state for animation
+            newGroup.classList.remove('visible');
         }
 
         // Function to return to main tree
         function returnToMainTree() {
-            mainTree.style.display = 'block';
-            subgoalTree.style.display = 'none';
-            backButton.style.display = 'none';
-            subgoalTitle.style.display = 'none';
-            currentParentGoalId = null;
+            // Hide subgoal view with transitions
+            subgoalTree.classList.remove('visible');
+            mainTree.classList.remove('hidden');
+            backButton.classList.remove('visible');
+            subgoalTitle.classList.remove('visible');
+
+            // Reset after transition
+            setTimeout(() => {
+                currentParentGoalId = null;
+            }, 300);
         }
 
         // Add back button event listener
@@ -940,6 +1023,14 @@
                     hideGoalDetails();
                 }
             }
+        });
+
+        // Initialize main tree branches with animation
+        document.querySelectorAll('.main-tree .branch-group').forEach((branch, index) => {
+            branch.classList.remove('visible');
+            setTimeout(() => {
+                branch.classList.add('visible');
+            }, index * 100);
         });
     </script>
 </body>
