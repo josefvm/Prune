@@ -12,62 +12,56 @@
             box-sizing: border-box;
         }
 
-        <body> {
+        body {
             font-family: Arial, sans-serif;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             background-color: #f5f7fa;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
+            padding: 2rem;
         }
 
         /* Container for the tree */
         .tree-container {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            max-width: 600px;
             background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
             position: relative;
-            transition: opacity 0.3s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         /* SVG styles */
         svg {
             width: 100%;
-            height: 100%;
-            display: block;
+            height: auto;
         }
 
         /* Tree trunk */
         .trunk {
             fill: #4a2f1c;
-            stroke-width: 8;
         }
 
         /* Branch styles */
         .branch {
             stroke: #4a2f1c;
-            stroke-width: 48;
+            stroke-width: 8;
             fill: none;
             stroke-linecap: round;
             cursor: pointer;
             transition: stroke-width 0.2s ease;
-            pointer-events: all;
         }
 
         .branch:hover {
-            stroke-width: 56;
+            stroke-width: 10;
         }
 
         /* Branch labels */
         .branch-label {
             fill: #2d3748;
-            font-size: 48px;
+            font-size: 14px;
             text-anchor: middle;
             pointer-events: none;
         }
@@ -77,8 +71,6 @@
             fill: #4299e1;
             cursor: pointer;
             transition: transform 0.2s ease;
-            r: 80;
-            pointer-events: all;
         }
 
         .goal-circle:hover {
@@ -88,7 +80,7 @@
         /* Goal text */
         .goal-text {
             fill: white;
-            font-size: 56px;
+            font-size: 12px;
             text-anchor: middle;
             pointer-events: none;
         }
@@ -385,164 +377,84 @@
             display: block;
         }
 
-        /* Update tree container styles */
-        .tree-container {
-            position: relative;
-            transition: opacity 0.3s ease;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Update SVG styles */
-        .main-tree,
-        .subgoal-tree {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            pointer-events: all; /* Ensure clicks work */
-        }
-
-        .main-tree {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        .main-tree.hidden {
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none; /* Disable clicks when hidden */
-        }
-
-        .subgoal-tree {
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none; /* Disable clicks when hidden */
-        }
-
-        .subgoal-tree.visible {
-            opacity: 1;
-            transform: scale(1);
-            pointer-events: all; /* Enable clicks when visible */
-        }
-
-        /* Branch animation */
-        .branch-group {
-            opacity: 0;
-            transform: scale(0.8);
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .branch-group:hover .branch {
-            stroke-width: 14;
-        }
-
-        .branch-group:hover .goal-circle {
-            transform: scale(1.1);
-        }
-
-        .branch-group.visible {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* Back button styles */
         .back-button {
-            position: fixed;
-            top: 2rem;
-            left: 2rem;
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
             background: #4299e1;
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             transition: all 0.2s ease;
             z-index: 11;
-            opacity: 0;
-            transform: translateX(-20px);
         }
 
         .back-button:hover {
             background: #3182ce;
         }
 
-        .back-button.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Subgoal title styles */
         .subgoal-title {
-            position: fixed;
-            top: 2rem;
+            position: absolute;
+            top: 1rem;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 2rem;
+            font-size: 1.5rem;
             color: #2d3748;
             font-weight: bold;
             z-index: 11;
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        .subgoal-title.visible {
-            opacity: 1;
-            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <div class="tree-container">
         <!-- Main tree SVG -->
-        <svg viewBox="0 0 3200 3200" preserveAspectRatio="xMidYMid meet" class="main-tree">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet" class="main-tree">
             <!-- Tree trunk -->
             <path class="trunk" 
-                  d="M 1520,2800 
-                     C 1520,2600 1560,2440 1600,2400
-                     C 1640,2440 1680,2600 1680,2800
-                     L 1520,2800 Z" />
+                  d="M 180,400 
+                     C 180,350 190,320 200,300
+                     C 210,320 220,350 220,400
+                     L 180,400 Z" />
 
             <!-- Left branch -->
             <g class="branch-group" data-branch-id="1">
                 <path class="branch" 
-                      d="M 1600,2400 C 1200,2320 800,2240 640,2160" />
-                <circle class="goal-circle" cx="640" cy="2160" r="80" />
-                <text class="goal-text" x="640" y="2180">1</text>
-                <text class="branch-label" x="1120" y="2320">Career Growth</text>
+                      d="M 200,300 C 150,280 100,260 80,240" />
+                <circle class="goal-circle" cx="80" cy="240" r="15" />
+                <text class="goal-text" x="80" y="245">1</text>
+                <text class="branch-label" x="140" y="270">Career Growth</text>
             </g>
 
             <!-- Center branch -->
             <g class="branch-group" data-branch-id="2">
                 <path class="branch" 
-                      d="M 1600,2400 C 1600,2320 1600,2240 1600,2160" />
-                <circle class="goal-circle" cx="1600" cy="2160" r="80" />
-                <text class="goal-text" x="1600" y="2180">2</text>
-                <text class="branch-label" x="1600" y="2320">Health & Fitness</text>
+                      d="M 200,300 C 200,280 200,260 200,240" />
+                <circle class="goal-circle" cx="200" cy="240" r="15" />
+                <text class="goal-text" x="200" y="245">2</text>
+                <text class="branch-label" x="200" y="270">Health & Fitness</text>
             </g>
 
             <!-- Right branch -->
             <g class="branch-group" data-branch-id="3">
                 <path class="branch" 
-                      d="M 1600,2400 C 2000,2320 2400,2240 2560,2160" />
-                <circle class="goal-circle" cx="2560" cy="2160" r="80" />
-                <text class="goal-text" x="2560" y="2180">3</text>
-                <text class="branch-label" x="2080" y="2320">Personal Projects</text>
+                      d="M 200,300 C 250,280 300,260 320,240" />
+                <circle class="goal-circle" cx="320" cy="240" r="15" />
+                <text class="goal-text" x="320" y="245">3</text>
+                <text class="branch-label" x="260" y="270">Personal Projects</text>
             </g>
         </svg>
 
         <!-- Subgoal tree SVG -->
-        <svg viewBox="0 0 3200 3200" preserveAspectRatio="xMidYMid meet" class="subgoal-tree">
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet" class="subgoal-tree">
             <!-- Tree trunk -->
             <path class="trunk" 
-                  d="M 1520,2800 
-                     C 1520,2600 1560,2440 1600,2400
-                     C 1640,2440 1680,2600 1680,2800
-                     L 1520,2800 Z" />
+                  d="M 180,400 
+                     C 180,350 190,320 200,300
+                     C 210,320 220,350 220,400
+                     L 180,400 Z" />
             
             <!-- Subgoals will be added here dynamically -->
         </svg>
@@ -767,10 +679,9 @@
         // Save changes when clicking save button
         saveButton.addEventListener('click', saveChanges);
 
-        // Update branch click handlers
+        // Add click event listeners to each branch group
         branchGroups.forEach(group => {
             group.addEventListener('click', (e) => {
-                e.stopPropagation();
                 const branchId = group.dataset.branchId;
                 const goal = goals[branchId];
                 
@@ -821,10 +732,10 @@
 
             // Calculate position for the new branch
             const existingBranches = document.querySelectorAll('.branch-group');
-            const baseX = 1600;
-            const baseY = 2400;
-            const angle = (existingBranches.length * 45) % 360;
-            const radius = 960;
+            const baseX = 200; // Center of the tree
+            const baseY = 300; // Starting point of branches
+            const angle = (existingBranches.length * 45) % 360; // Distribute branches evenly
+            const radius = 120; // Length of the branch
             const endX = baseX + radius * Math.cos(angle * Math.PI / 180);
             const endY = baseY - radius * Math.sin(angle * Math.PI / 180);
 
@@ -838,20 +749,20 @@
             goalCircle.setAttribute('class', 'goal-circle');
             goalCircle.setAttribute('cx', endX);
             goalCircle.setAttribute('cy', endY);
-            goalCircle.setAttribute('r', '80');
+            goalCircle.setAttribute('r', '15');
 
             // Create the goal number text
             const goalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             goalText.setAttribute('class', 'goal-text');
             goalText.setAttribute('x', endX);
-            goalText.setAttribute('y', endY + 10);
+            goalText.setAttribute('y', endY + 5);
             goalText.textContent = goalId;
 
             // Create the branch label
             const branchLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
             branchLabel.setAttribute('class', 'branch-label');
             branchLabel.setAttribute('x', (baseX + endX) / 2);
-            branchLabel.setAttribute('y', (baseY + endY) / 2 + 40);
+            branchLabel.setAttribute('y', (baseY + endY) / 2 + 20);
             branchLabel.textContent = title;
 
             // Append all elements to the group
@@ -863,22 +774,10 @@
             // Add the new group to the SVG
             document.querySelector('svg').appendChild(newGroup);
 
-            // Animate the new branch
-            setTimeout(() => {
-                newGroup.classList.add('visible');
-            }, 100);
-
             // Add click event listener to the new branch
             newGroup.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent event bubbling
                 const branchId = newGroup.dataset.branchId;
-                const goal = goals[branchId];
-                
-                if (goal && goal.subgoals) {
-                    showSubgoalView(branchId);
-                } else {
-                    showGoalDetails(branchId);
-                }
+                showGoalDetails(branchId);
             });
 
             // Set initial progress
@@ -954,20 +853,15 @@
             existingSubgoals.forEach(subgoal => subgoal.remove());
 
             // Create subgoal branches
-            Object.entries(parentGoal.subgoals).forEach(([subgoalId, subgoal], index) => {
+            Object.entries(parentGoal.subgoals).forEach(([subgoalId, subgoal]) => {
                 createSubgoalBranch(subgoalId, subgoal);
-                // Add delay for each branch
-                setTimeout(() => {
-                    const branchGroup = subgoalTree.querySelector(`[data-branch-id="${subgoalId}"]`);
-                    branchGroup.classList.add('visible');
-                }, index * 100);
             });
 
-            // Show subgoal view with transitions
-            mainTree.classList.add('hidden');
-            subgoalTree.classList.add('visible');
-            backButton.classList.add('visible');
-            subgoalTitle.classList.add('visible');
+            // Show subgoal view
+            mainTree.style.display = 'none';
+            subgoalTree.style.display = 'block';
+            backButton.style.display = 'block';
+            subgoalTitle.style.display = 'block';
         }
 
         // Function to create a subgoal branch
@@ -978,10 +872,10 @@
 
             // Calculate position for the branch
             const existingBranches = subgoalTree.querySelectorAll('.branch-group');
-            const baseX = 1600;
-            const baseY = 2400;
+            const baseX = 200;
+            const baseY = 300;
             const angle = (existingBranches.length * 45) % 360;
-            const radius = 960;
+            const radius = 120;
             const endX = baseX + radius * Math.cos(angle * Math.PI / 180);
             const endY = baseY - radius * Math.sin(angle * Math.PI / 180);
 
@@ -995,18 +889,18 @@
             goalCircle.setAttribute('class', 'goal-circle');
             goalCircle.setAttribute('cx', endX);
             goalCircle.setAttribute('cy', endY);
-            goalCircle.setAttribute('r', '80');
+            goalCircle.setAttribute('r', '15');
 
             const goalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             goalText.setAttribute('class', 'goal-text');
             goalText.setAttribute('x', endX);
-            goalText.setAttribute('y', endY + 10);
+            goalText.setAttribute('y', endY + 5);
             goalText.textContent = subgoalId.split('.')[1];
 
             const branchLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
             branchLabel.setAttribute('class', 'branch-label');
             branchLabel.setAttribute('x', (baseX + endX) / 2);
-            branchLabel.setAttribute('y', (baseY + endY) / 2 + 40);
+            branchLabel.setAttribute('y', (baseY + endY) / 2 + 20);
             branchLabel.textContent = subgoal.title;
 
             // Append elements
@@ -1016,30 +910,20 @@
             newGroup.appendChild(branchLabel);
 
             // Add click event listener
-            newGroup.addEventListener('click', (e) => {
-                e.stopPropagation();
+            newGroup.addEventListener('click', () => {
                 showGoalDetails(subgoalId);
             });
 
-            // Add the branch to the tree
             subgoalTree.appendChild(newGroup);
-
-            // Set initial state for animation
-            newGroup.classList.remove('visible');
         }
 
         // Function to return to main tree
         function returnToMainTree() {
-            // Hide subgoal view with transitions
-            subgoalTree.classList.remove('visible');
-            mainTree.classList.remove('hidden');
-            backButton.classList.remove('visible');
-            subgoalTitle.classList.remove('visible');
-
-            // Reset after transition
-            setTimeout(() => {
-                currentParentGoalId = null;
-            }, 300);
+            mainTree.style.display = 'block';
+            subgoalTree.style.display = 'none';
+            backButton.style.display = 'none';
+            subgoalTitle.style.display = 'none';
+            currentParentGoalId = null;
         }
 
         // Add back button event listener
@@ -1048,7 +932,7 @@
         // Update escape key handler
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                if (subgoalTree.classList.contains('visible')) {
+                if (subgoalTree.style.display === 'block') {
                     returnToMainTree();
                 } else if (addGoalForm.classList.contains('active')) {
                     hideAddGoalForm();
@@ -1056,14 +940,6 @@
                     hideGoalDetails();
                 }
             }
-        });
-
-        // Initialize main tree branches with animation
-        document.querySelectorAll('.main-tree .branch-group').forEach((branch, index) => {
-            branch.classList.remove('visible');
-            setTimeout(() => {
-                branch.classList.add('visible');
-            }, index * 100);
         });
     </script>
 </body>
