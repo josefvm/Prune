@@ -193,6 +193,7 @@
             font-size: 1rem;
             transition: all 0.2s ease;
             margin-top: 1rem;
+            display: none; /* Hide by default */
         }
 
         .save-button:hover {
@@ -485,6 +486,14 @@
         let isEditing = false;
         let currentGoalId = null;
 
+        // Function to hide goal details
+        function hideGoalDetails() {
+            goalPanel.classList.remove('active');
+            overlay.classList.remove('active');
+            isEditing = false;
+            saveButton.style.display = 'none';
+        }
+
         // Function to show goal details
         function showGoalDetails(branchId) {
             const goal = goals[branchId];
@@ -695,6 +704,15 @@
                 } else {
                     hideGoalDetails();
                 }
+            }
+        });
+
+        // Update overlay click handler to handle both panels
+        overlay.addEventListener('click', () => {
+            if (goalPanel.classList.contains('active')) {
+                hideGoalDetails();
+            } else if (addGoalForm.classList.contains('active')) {
+                hideAddGoalForm();
             }
         });
     </script>
