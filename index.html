@@ -56,6 +56,7 @@
             stroke-linecap: round;
             cursor: pointer;
             transition: stroke-width 0.2s ease;
+            pointer-events: all;
         }
 
         .branch:hover {
@@ -76,6 +77,7 @@
             cursor: pointer;
             transition: transform 0.2s ease;
             r: 20;
+            pointer-events: all;
         }
 
         .goal-circle:hover {
@@ -468,6 +470,15 @@
             opacity: 0;
             transform: scale(0.8);
             transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .branch-group:hover .branch {
+            stroke-width: 14;
+        }
+
+        .branch-group:hover .goal-circle {
+            transform: scale(1.1);
         }
 
         .branch-group.visible {
@@ -747,9 +758,10 @@
         // Save changes when clicking save button
         saveButton.addEventListener('click', saveChanges);
 
-        // Add click event listeners to each branch group
+        // Update branch click handlers
         branchGroups.forEach(group => {
             group.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 const branchId = group.dataset.branchId;
                 const goal = goals[branchId];
                 
@@ -849,8 +861,15 @@
 
             // Add click event listener to the new branch
             newGroup.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 const branchId = newGroup.dataset.branchId;
-                showGoalDetails(branchId);
+                const goal = goals[branchId];
+                
+                if (goal && goal.subgoals) {
+                    showSubgoalView(branchId);
+                } else {
+                    showGoalDetails(branchId);
+                }
             });
 
             // Set initial progress
@@ -940,6 +959,16 @@
             subgoalTree.classList.add('visible');
             backButton.classList.add('visible');
             subgoalTitle.classList.add('visible');
+
+            // Add click event listeners to new subgoal branches
+            const newSubgoalBranches = subgoalTree.querySelectorAll('.branch-group');
+            newSubgoalBranches.forEach(branch => {
+                branch.addEventListener('click', (e) => {
+                    e.stopPropagation(); // Prevent event bubbling
+                    const subgoalId = branch.dataset.branchId;
+                    showGoalDetails(subgoalId);
+                });
+            });
         }
 
         // Function to create a subgoal branch
@@ -988,7 +1017,8 @@
             newGroup.appendChild(branchLabel);
 
             // Add click event listener
-            newGroup.addEventListener('click', () => {
+            newGroup.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent event bubbling
                 showGoalDetails(subgoalId);
             });
 
