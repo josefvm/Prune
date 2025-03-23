@@ -89,7 +89,7 @@
         .goal-panel {
             position: fixed;
             top: 0;
-            right: -400px; /* Start off-screen */
+            right: -400px;
             width: 400px;
             height: 100vh;
             background: white;
@@ -117,6 +117,99 @@
             font-size: 1.5rem;
             color: #2d3748;
             font-weight: bold;
+            border: none;
+            background: none;
+            width: 100%;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+        }
+
+        .goal-panel-title:focus {
+            background-color: #f7fafc;
+            outline: none;
+        }
+
+        .goal-description {
+            color: #4a5568;
+            line-height: 1.6;
+            border: none;
+            background: none;
+            width: 100%;
+            padding: 0.5rem;
+            margin: -0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s ease;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .goal-description:focus {
+            background-color: #f7fafc;
+            outline: none;
+        }
+
+        /* Progress bar styles */
+        .progress-container {
+            margin: 1.5rem 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #4299e1;
+            transition: width 0.3s ease;
+        }
+
+        .progress-input {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+
+        .progress-text {
+            display: block;
+            text-align: center;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        /* Save button styles */
+        .save-button {
+            background: #48bb78;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .save-button:hover {
+            background: #38a169;
+        }
+
+        /* Branch progress colors */
+        .branch[data-progress="100"] {
+            stroke: #48bb78;
+        }
+
+        .branch[data-progress="50"] {
+            stroke: #ecc94b;
+        }
+
+        .branch[data-progress="0"] {
+            stroke: #4a2f1c;
         }
 
         .close-button {
@@ -137,11 +230,6 @@
             display: flex;
             flex-direction: column;
             gap: 1.5rem;
-        }
-
-        .goal-description {
-            color: #4a5568;
-            line-height: 1.6;
         }
 
         .goal-progress {
@@ -318,12 +406,21 @@
     <!-- Goal Detail Panel -->
     <div class="goal-panel">
         <div class="goal-panel-header">
-            <h2 class="goal-panel-title">Goal Details</h2>
+            <input type="text" class="goal-panel-title" readonly>
             <button class="close-button">&times;</button>
         </div>
         <div class="goal-panel-content">
-            <div class="goal-description"></div>
-            <div class="goal-progress">In Progress</div>
+            <textarea class="goal-description" readonly></textarea>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <input type="range" class="progress-input" min="0" max="100" value="0">
+                <span class="progress-text">0%</span>
+            </div>
+
+            <button class="save-button">Save Changes</button>
         </div>
     </div>
 
@@ -350,22 +447,25 @@
     </div>
 
     <script>
-        // Sample goal data
+        // Update sample goal data to include progress
         const goals = {
             1: {
                 title: "Career Growth",
                 description: "Advance to senior developer position by completing advanced certifications and leading two major projects. Focus on improving leadership skills and technical expertise in cloud architecture.",
-                progress: "In Progress"
+                progress: "In Progress",
+                percentage: 30
             },
             2: {
                 title: "Health & Fitness",
                 description: "Achieve and maintain a healthy lifestyle by exercising 4 times per week, following a balanced diet, and getting 8 hours of sleep regularly. Track progress using fitness apps.",
-                progress: "In Progress"
+                progress: "In Progress",
+                percentage: 50
             },
             3: {
                 title: "Personal Projects",
                 description: "Complete three personal projects: a mobile app for task management, a web-based portfolio, and a machine learning model for personal finance predictions. Document progress on GitHub.",
-                progress: "In Progress"
+                progress: "In Progress",
+                percentage: 75
             }
         };
 
@@ -374,27 +474,91 @@
         const goalPanel = document.querySelector('.goal-panel');
         const overlay = document.querySelector('.overlay');
         const closeButton = document.querySelector('.close-button');
-        const goalDescription = document.querySelector('.goal-description');
+        const goalTitleInput = document.querySelector('.goal-panel-title');
+        const goalDescriptionTextarea = document.querySelector('.goal-description');
+        const progressBar = document.querySelector('.progress-fill');
+        const progressInput = document.querySelector('.progress-input');
+        const progressText = document.querySelector('.progress-text');
+        const saveButton = document.querySelector('.save-button');
+
+        // Track if we're in edit mode
+        let isEditing = false;
+        let currentGoalId = null;
 
         // Function to show goal details
         function showGoalDetails(branchId) {
             const goal = goals[branchId];
             if (!goal) return;
 
+            currentGoalId = branchId;
+            isEditing = false;
+
             // Update panel content
-            document.querySelector('.goal-panel-title').textContent = goal.title;
-            goalDescription.textContent = goal.description;
+            goalTitleInput.value = goal.title;
+            goalDescriptionTextarea.value = goal.description;
+            progressInput.value = goal.percentage;
+            progressText.textContent = `${goal.percentage}%`;
+            progressBar.style.width = `${goal.percentage}%`;
+
+            // Update branch color based on progress
+            const branch = document.querySelector(`[data-branch-id="${branchId}"] .branch`);
+            branch.setAttribute('data-progress', goal.percentage);
+
+            // Set fields to readonly
+            goalTitleInput.readOnly = true;
+            goalDescriptionTextarea.readOnly = true;
 
             // Show panel and overlay
             goalPanel.classList.add('active');
             overlay.classList.add('active');
         }
 
-        // Function to hide goal details
-        function hideGoalDetails() {
-            goalPanel.classList.remove('active');
-            overlay.classList.remove('active');
+        // Function to enable editing
+        function enableEditing() {
+            isEditing = true;
+            goalTitleInput.readOnly = false;
+            goalDescriptionTextarea.readOnly = false;
+            saveButton.style.display = 'block';
         }
+
+        // Function to save changes
+        function saveChanges() {
+            if (!currentGoalId || !isEditing) return;
+
+            const goal = goals[currentGoalId];
+            goal.title = goalTitleInput.value;
+            goal.description = goalDescriptionTextarea.value;
+            goal.percentage = parseInt(progressInput.value);
+
+            // Update branch label
+            const branchLabel = document.querySelector(`[data-branch-id="${currentGoalId}"] .branch-label`);
+            branchLabel.textContent = goal.title;
+
+            // Update branch color
+            const branch = document.querySelector(`[data-branch-id="${currentGoalId}"] .branch`);
+            branch.setAttribute('data-progress', goal.percentage);
+
+            // Disable editing
+            isEditing = false;
+            goalTitleInput.readOnly = true;
+            goalDescriptionTextarea.readOnly = true;
+            saveButton.style.display = 'none';
+        }
+
+        // Update progress bar and text when slider changes
+        progressInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            progressBar.style.width = `${value}%`;
+            progressText.textContent = `${value}%`;
+            enableEditing();
+        });
+
+        // Enable editing when clicking title or description
+        goalTitleInput.addEventListener('click', enableEditing);
+        goalDescriptionTextarea.addEventListener('click', enableEditing);
+
+        // Save changes when clicking save button
+        saveButton.addEventListener('click', saveChanges);
 
         // Add click event listeners to each branch group
         branchGroups.forEach(group => {
@@ -490,6 +654,9 @@
                 const branchId = newGroup.dataset.branchId;
                 showGoalDetails(branchId);
             });
+
+            // Set initial progress
+            branchPath.setAttribute('data-progress', '0');
         }
 
         // Handle form submission
@@ -500,11 +667,12 @@
             const description = document.getElementById('goalDescription').value;
             const goalId = Object.keys(goals).length + 1;
 
-            // Add the new goal to the goals object
+            // Add the new goal to the goals object with initial progress
             goals[goalId] = {
                 title: title,
                 description: description,
-                progress: "In Progress"
+                progress: "In Progress",
+                percentage: 0
             };
 
             // Create and add the new branch to the tree
