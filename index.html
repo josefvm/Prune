@@ -25,8 +25,8 @@
         /* Container for the tree */
         .tree-container {
             width: 100%;
-            max-width: 800px;
-            height: 600px;
+            max-width: 1200px;
+            height: 800px;
             background: white;
             border-radius: 12px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -45,13 +45,13 @@
         /* Tree trunk */
         .trunk {
             fill: #4a2f1c;
-            stroke-width: 2;
+            stroke-width: 4;
         }
 
         /* Branch styles */
         .branch {
             stroke: #4a2f1c;
-            stroke-width: 12;
+            stroke-width: 24;
             fill: none;
             stroke-linecap: round;
             cursor: pointer;
@@ -60,13 +60,13 @@
         }
 
         .branch:hover {
-            stroke-width: 14;
+            stroke-width: 28;
         }
 
         /* Branch labels */
         .branch-label {
             fill: #2d3748;
-            font-size: 16px;
+            font-size: 24px;
             text-anchor: middle;
             pointer-events: none;
         }
@@ -76,7 +76,7 @@
             fill: #4299e1;
             cursor: pointer;
             transition: transform 0.2s ease;
-            r: 20;
+            r: 40;
             pointer-events: all;
         }
 
@@ -87,7 +87,7 @@
         /* Goal text */
         .goal-text {
             fill: white;
-            font-size: 14px;
+            font-size: 28px;
             text-anchor: middle;
             pointer-events: none;
         }
@@ -447,50 +447,50 @@
 <body>
     <div class="tree-container">
         <!-- Main tree SVG -->
-        <svg viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" class="main-tree">
+        <svg viewBox="0 0 1600 1600" preserveAspectRatio="xMidYMid meet" class="main-tree">
             <!-- Tree trunk -->
             <path class="trunk" 
-                  d="M 380,700 
-                     C 380,650 390,620 400,600
-                     C 410,620 420,650 420,700
-                     L 380,700 Z" />
+                  d="M 760,1400 
+                     C 760,1300 780,1220 800,1200
+                     C 820,1220 840,1300 840,1400
+                     L 760,1400 Z" />
 
             <!-- Left branch -->
             <g class="branch-group" data-branch-id="1">
                 <path class="branch" 
-                      d="M 400,600 C 300,580 200,560 160,540" />
-                <circle class="goal-circle" cx="160" cy="540" r="20" />
-                <text class="goal-text" x="160" y="545">1</text>
-                <text class="branch-label" x="280" y="580">Career Growth</text>
+                      d="M 800,1200 C 600,1160 400,1120 320,1080" />
+                <circle class="goal-circle" cx="320" cy="1080" r="40" />
+                <text class="goal-text" x="320" y="1090">1</text>
+                <text class="branch-label" x="560" y="1160">Career Growth</text>
             </g>
 
             <!-- Center branch -->
             <g class="branch-group" data-branch-id="2">
                 <path class="branch" 
-                      d="M 400,600 C 400,580 400,560 400,540" />
-                <circle class="goal-circle" cx="400" cy="540" r="20" />
-                <text class="goal-text" x="400" y="545">2</text>
-                <text class="branch-label" x="400" y="580">Health & Fitness</text>
+                      d="M 800,1200 C 800,1160 800,1120 800,1080" />
+                <circle class="goal-circle" cx="800" cy="1080" r="40" />
+                <text class="goal-text" x="800" y="1090">2</text>
+                <text class="branch-label" x="800" y="1160">Health & Fitness</text>
             </g>
 
             <!-- Right branch -->
             <g class="branch-group" data-branch-id="3">
                 <path class="branch" 
-                      d="M 400,600 C 500,580 600,560 640,540" />
-                <circle class="goal-circle" cx="640" cy="540" r="20" />
-                <text class="goal-text" x="640" y="545">3</text>
-                <text class="branch-label" x="520" y="580">Personal Projects</text>
+                      d="M 800,1200 C 1000,1160 1200,1120 1280,1080" />
+                <circle class="goal-circle" cx="1280" cy="1080" r="40" />
+                <text class="goal-text" x="1280" y="1090">3</text>
+                <text class="branch-label" x="1040" y="1160">Personal Projects</text>
             </g>
         </svg>
 
         <!-- Subgoal tree SVG -->
-        <svg viewBox="0 0 800 800" preserveAspectRatio="xMidYMid meet" class="subgoal-tree">
+        <svg viewBox="0 0 1600 1600" preserveAspectRatio="xMidYMid meet" class="subgoal-tree">
             <!-- Tree trunk -->
             <path class="trunk" 
-                  d="M 380,700 
-                     C 380,650 390,620 400,600
-                     C 410,620 420,650 420,700
-                     L 380,700 Z" />
+                  d="M 760,1400 
+                     C 760,1300 780,1220 800,1200
+                     C 820,1220 840,1300 840,1400
+                     L 760,1400 Z" />
             
             <!-- Subgoals will be added here dynamically -->
         </svg>
@@ -769,10 +769,10 @@
 
             // Calculate position for the new branch
             const existingBranches = document.querySelectorAll('.branch-group');
-            const baseX = 400;
-            const baseY = 600;
+            const baseX = 800;
+            const baseY = 1200;
             const angle = (existingBranches.length * 45) % 360;
-            const radius = 240;
+            const radius = 480;
             const endX = baseX + radius * Math.cos(angle * Math.PI / 180);
             const endY = baseY - radius * Math.sin(angle * Math.PI / 180);
 
@@ -786,7 +786,7 @@
             goalCircle.setAttribute('class', 'goal-circle');
             goalCircle.setAttribute('cx', endX);
             goalCircle.setAttribute('cy', endY);
-            goalCircle.setAttribute('r', '20');
+            goalCircle.setAttribute('r', '40');
 
             // Create the goal number text
             const goalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
@@ -926,10 +926,10 @@
 
             // Calculate position for the branch
             const existingBranches = subgoalTree.querySelectorAll('.branch-group');
-            const baseX = 400;
-            const baseY = 600;
+            const baseX = 800;
+            const baseY = 1200;
             const angle = (existingBranches.length * 45) % 360;
-            const radius = 240;
+            const radius = 480;
             const endX = baseX + radius * Math.cos(angle * Math.PI / 180);
             const endY = baseY - radius * Math.sin(angle * Math.PI / 180);
 
@@ -943,7 +943,7 @@
             goalCircle.setAttribute('class', 'goal-circle');
             goalCircle.setAttribute('cx', endX);
             goalCircle.setAttribute('cy', endY);
-            goalCircle.setAttribute('r', '20');
+            goalCircle.setAttribute('r', '40');
 
             const goalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
             goalText.setAttribute('class', 'goal-text');
