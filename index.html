@@ -384,56 +384,15 @@
             display: block;
         }
 
-        .back-button {
-            position: absolute;
-            top: 1rem;
-            left: 1rem;
-            background: #4299e1;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            z-index: 11;
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        .back-button:hover {
-            background: #3182ce;
-        }
-
-        .back-button.visible {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        .subgoal-title {
-            position: absolute;
-            top: 1rem;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
-            color: #2d3748;
-            font-weight: bold;
-            z-index: 11;
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-
-        .subgoal-title.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Add transition styles */
+        /* Update tree container styles */
         .tree-container {
             position: relative;
             transition: opacity 0.3s ease;
+            width: 100%;
+            height: 100%;
         }
 
+        /* Update SVG styles */
         .main-tree,
         .subgoal-tree {
             position: absolute;
@@ -442,27 +401,25 @@
             width: 100%;
             height: 100%;
             transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .main-tree {
-            opacity: 1;
-            transform: scale(1);
+            pointer-events: all; /* Ensure clicks work */
         }
 
         .main-tree.hidden {
             opacity: 0;
             transform: scale(0.95);
+            pointer-events: none; /* Disable clicks when hidden */
         }
 
         .subgoal-tree {
             opacity: 0;
             transform: scale(0.95);
-            display: block;
+            pointer-events: none; /* Disable clicks when hidden */
         }
 
         .subgoal-tree.visible {
             opacity: 1;
             transform: scale(1);
+            pointer-events: all; /* Enable clicks when visible */
         }
 
         /* Branch animation */
@@ -761,7 +718,7 @@
         // Update branch click handlers
         branchGroups.forEach(group => {
             group.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent event bubbling
+                e.stopPropagation();
                 const branchId = group.dataset.branchId;
                 const goal = goals[branchId];
                 
@@ -959,16 +916,6 @@
             subgoalTree.classList.add('visible');
             backButton.classList.add('visible');
             subgoalTitle.classList.add('visible');
-
-            // Add click event listeners to new subgoal branches
-            const newSubgoalBranches = subgoalTree.querySelectorAll('.branch-group');
-            newSubgoalBranches.forEach(branch => {
-                branch.addEventListener('click', (e) => {
-                    e.stopPropagation(); // Prevent event bubbling
-                    const subgoalId = branch.dataset.branchId;
-                    showGoalDetails(subgoalId);
-                });
-            });
         }
 
         // Function to create a subgoal branch
@@ -1018,7 +965,7 @@
 
             // Add click event listener
             newGroup.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent event bubbling
+                e.stopPropagation();
                 showGoalDetails(subgoalId);
             });
 
@@ -1049,7 +996,7 @@
         // Update escape key handler
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
-                if (subgoalTree.style.display === 'block') {
+                if (subgoalTree.classList.contains('visible')) {
                     returnToMainTree();
                 } else if (addGoalForm.classList.contains('active')) {
                     hideAddGoalForm();
