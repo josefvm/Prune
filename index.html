@@ -360,11 +360,58 @@
         .cancel-button:hover {
             background: #cbd5e0;
         }
+
+        /* Add styles for subgoal view */
+        .subgoal-view {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 10;
+        }
+
+        .subgoal-view.active {
+            display: block;
+        }
+
+        .back-button {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            z-index: 11;
+        }
+
+        .back-button:hover {
+            background: #3182ce;
+        }
+
+        .subgoal-title {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: #2d3748;
+            font-weight: bold;
+            z-index: 11;
+        }
     </style>
 </head>
 <body>
     <div class="tree-container">
-        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet">
+        <!-- Main tree SVG -->
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet" class="main-tree">
             <!-- Tree trunk -->
             <path class="trunk" 
                   d="M 180,400 
@@ -399,7 +446,25 @@
                 <text class="branch-label" x="260" y="270">Personal Projects</text>
             </g>
         </svg>
+
+        <!-- Subgoal tree SVG -->
+        <svg viewBox="0 0 400 500" preserveAspectRatio="xMidYMid meet" class="subgoal-tree">
+            <!-- Tree trunk -->
+            <path class="trunk" 
+                  d="M 180,400 
+                     C 180,350 190,320 200,300
+                     C 210,320 220,350 220,400
+                     L 180,400 Z" />
+            
+            <!-- Subgoals will be added here dynamically -->
+        </svg>
     </div>
+
+    <!-- Back button -->
+    <button class="back-button">← Back to Main Tree</button>
+
+    <!-- Subgoal title -->
+    <div class="subgoal-title"></div>
 
     <!-- Overlay for modal -->
     <div class="overlay"></div>
@@ -448,25 +513,67 @@
     </div>
 
     <script>
-        // Update sample goal data to include progress
+        // Update goal data structure to include subgoals
         const goals = {
             1: {
                 title: "Career Growth",
                 description: "Advance to senior developer position by completing advanced certifications and leading two major projects. Focus on improving leadership skills and technical expertise in cloud architecture.",
                 progress: "In Progress",
-                percentage: 30
+                percentage: 30,
+                subgoals: {
+                    1.1: {
+                        title: "Complete AWS Certification",
+                        description: "Achieve AWS Solutions Architect Professional certification by studying 2 hours daily and completing practice exams.",
+                        progress: "In Progress",
+                        percentage: 60
+                    },
+                    1.2: {
+                        title: "Lead Project Team",
+                        description: "Successfully lead a team of 5 developers in implementing a new microservices architecture.",
+                        progress: "In Progress",
+                        percentage: 20
+                    }
+                }
             },
             2: {
                 title: "Health & Fitness",
                 description: "Achieve and maintain a healthy lifestyle by exercising 4 times per week, following a balanced diet, and getting 8 hours of sleep regularly. Track progress using fitness apps.",
                 progress: "In Progress",
-                percentage: 50
+                percentage: 50,
+                subgoals: {
+                    2.1: {
+                        title: "Regular Exercise",
+                        description: "Establish a consistent workout routine with 4 sessions per week, including cardio and strength training.",
+                        progress: "In Progress",
+                        percentage: 70
+                    },
+                    2.2: {
+                        title: "Healthy Diet",
+                        description: "Follow a balanced diet plan, meal prep weekly, and track nutrition using a food diary app.",
+                        progress: "In Progress",
+                        percentage: 40
+                    }
+                }
             },
             3: {
                 title: "Personal Projects",
                 description: "Complete three personal projects: a mobile app for task management, a web-based portfolio, and a machine learning model for personal finance predictions. Document progress on GitHub.",
                 progress: "In Progress",
-                percentage: 75
+                percentage: 75,
+                subgoals: {
+                    3.1: {
+                        title: "Task Management App",
+                        description: "Develop a cross-platform mobile app for task management with offline support and cloud sync.",
+                        progress: "In Progress",
+                        percentage: 80
+                    },
+                    3.2: {
+                        title: "Portfolio Website",
+                        description: "Create a modern, responsive portfolio website showcasing projects and skills.",
+                        progress: "In Progress",
+                        percentage: 90
+                    }
+                }
             }
         };
 
@@ -485,6 +592,9 @@
         // Track if we're in edit mode
         let isEditing = false;
         let currentGoalId = null;
+
+        // Track current view state
+        let currentParentGoalId = null;
 
         // Function to hide goal details
         function hideGoalDetails() {
@@ -573,7 +683,13 @@
         branchGroups.forEach(group => {
             group.addEventListener('click', (e) => {
                 const branchId = group.dataset.branchId;
-                showGoalDetails(branchId);
+                const goal = goals[branchId];
+                
+                if (goal && goal.subgoals) {
+                    showSubgoalView(branchId);
+                } else {
+                    showGoalDetails(branchId);
+                }
             });
         });
 
@@ -713,6 +829,116 @@
                 hideGoalDetails();
             } else if (addGoalForm.classList.contains('active')) {
                 hideAddGoalForm();
+            }
+        });
+
+        // Get additional DOM elements
+        const mainTree = document.querySelector('.main-tree');
+        const subgoalTree = document.querySelector('.subgoal-tree');
+        const backButton = document.querySelector('.back-button');
+        const subgoalTitle = document.querySelector('.subgoal-title');
+
+        // Function to show subgoal view
+        function showSubgoalView(parentGoalId) {
+            const parentGoal = goals[parentGoalId];
+            if (!parentGoal || !parentGoal.subgoals) return;
+
+            currentParentGoalId = parentGoalId;
+            
+            // Update title
+            subgoalTitle.textContent = parentGoal.title;
+            
+            // Clear existing subgoals
+            const existingSubgoals = subgoalTree.querySelectorAll('.branch-group');
+            existingSubgoals.forEach(subgoal => subgoal.remove());
+
+            // Create subgoal branches
+            Object.entries(parentGoal.subgoals).forEach(([subgoalId, subgoal]) => {
+                createSubgoalBranch(subgoalId, subgoal);
+            });
+
+            // Show subgoal view
+            mainTree.style.display = 'none';
+            subgoalTree.style.display = 'block';
+            backButton.style.display = 'block';
+            subgoalTitle.style.display = 'block';
+        }
+
+        // Function to create a subgoal branch
+        function createSubgoalBranch(subgoalId, subgoal) {
+            const newGroup = document.createElementNS("http://www.w3.org/2000/svg", "g");
+            newGroup.setAttribute('class', 'branch-group');
+            newGroup.setAttribute('data-branch-id', subgoalId);
+
+            // Calculate position for the branch
+            const existingBranches = subgoalTree.querySelectorAll('.branch-group');
+            const baseX = 200;
+            const baseY = 300;
+            const angle = (existingBranches.length * 45) % 360;
+            const radius = 120;
+            const endX = baseX + radius * Math.cos(angle * Math.PI / 180);
+            const endY = baseY - radius * Math.sin(angle * Math.PI / 180);
+
+            // Create branch elements
+            const branchPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            branchPath.setAttribute('class', 'branch');
+            branchPath.setAttribute('data-progress', subgoal.percentage);
+            branchPath.setAttribute('d', `M ${baseX},${baseY} C ${baseX + (endX - baseX) * 0.5},${baseY} ${endX},${endY} ${endX},${endY}`);
+
+            const goalCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            goalCircle.setAttribute('class', 'goal-circle');
+            goalCircle.setAttribute('cx', endX);
+            goalCircle.setAttribute('cy', endY);
+            goalCircle.setAttribute('r', '15');
+
+            const goalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            goalText.setAttribute('class', 'goal-text');
+            goalText.setAttribute('x', endX);
+            goalText.setAttribute('y', endY + 5);
+            goalText.textContent = subgoalId.split('.')[1];
+
+            const branchLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+            branchLabel.setAttribute('class', 'branch-label');
+            branchLabel.setAttribute('x', (baseX + endX) / 2);
+            branchLabel.setAttribute('y', (baseY + endY) / 2 + 20);
+            branchLabel.textContent = subgoal.title;
+
+            // Append elements
+            newGroup.appendChild(branchPath);
+            newGroup.appendChild(goalCircle);
+            newGroup.appendChild(goalText);
+            newGroup.appendChild(branchLabel);
+
+            // Add click event listener
+            newGroup.addEventListener('click', () => {
+                showGoalDetails(subgoalId);
+            });
+
+            subgoalTree.appendChild(newGroup);
+        }
+
+        // Function to return to main tree
+        function returnToMainTree() {
+            mainTree.style.display = 'block';
+            subgoalTree.style.display = 'none';
+            backButton.style.display = 'none';
+            subgoalTitle.style.display = 'none';
+            currentParentGoalId = null;
+        }
+
+        // Add back button event listener
+        backButton.addEventListener('click', returnToMainTree);
+
+        // Update escape key handler
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (subgoalTree.style.display === 'block') {
+                    returnToMainTree();
+                } else if (addGoalForm.classList.contains('active')) {
+                    hideAddGoalForm();
+                } else {
+                    hideGoalDetails();
+                }
             }
         });
     </script>
